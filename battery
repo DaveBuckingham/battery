@@ -1,0 +1,36 @@
+#!/bin/bash
+
+# This script calls upower to get the battery status and prints it out.
+# Author: David Buckingham
+
+# input: string, count
+# output: string repeated count times
+repeat(){
+    let i=$2
+    while [ $i -gt 0 ]
+    do
+        echo -n "$1"
+        ((i--))
+    done
+}
+
+# some machines have more than one battery, get a list of all of them.
+batteries=$(upower -e | grep 'battery_')
+
+for b in $batteries; do
+
+    name=$(echo "$b" | sed 's/.*battery_//')
+    percent=$(upower -i $b | grep -e 'percentage:' | awk '$1 {print $2}' | sed s/%//)
+    state=$(upower -i $b | grep -e 'state:' | awk '$1 {print $2}' | sed s/%//)
+
+    # draw the battery meter
+    metersize=25
+    barsize=(metersize*percent)/100
+    diffsize=metersize-barsize
+    bar=[$(repeat "=" $barsize)$(repeat "." ${diffsize})] 
+
+    # print one line per battery
+    printf "%s %s %3s%% (%s)\n" "${name}" "${bar}" "${percent}" "${state}"
+
+done
+
