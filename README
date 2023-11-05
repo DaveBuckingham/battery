@@ -1,6 +1,6 @@
 This script calls upower to get the battery status and prints it out.
 
-```$ battery
+$ battery
 BAT0 [=========================] 100% (fully-charged)
-BAT1 [==================.......]  72% (discharging)```
+BAT1 [==================.......]  72% (discharging)
 
